@@ -1,0 +1,52 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+/**
+ * @brief Menentukan warna lampu APILL pada detik tertentu.
+ * * @param detik Waktu dalam detik yang ingin diperiksa.
+ * @return string Warna lampu ("Hijau", "Kuning", atau "Merah").
+ */
+std::string getWarnaLampu(int detik) {
+    // --- Definisi Durasi dan Siklus ---
+    const int DURASI_HIJAU = 20;
+    const int DURASI_KUNING = 3;
+    const int DURASI_MERAH = 80;
+    const int TOTAL_SIKLUS = DURASI_HIJAU + DURASI_KUNING + DURASI_MERAH; // 103 detik
+
+    // --- Menghitung Offset berdasarkan Clue ---
+    // Clue: Lampu Kuning dimulai pada detik ke-45.
+    // Dalam siklus normal, Kuning dimulai setelah Hijau selesai (detik ke-20).
+    const int WAKTU_NYATA_KUNING = 45;
+    const int WAKTU_NORMAL_KUNING = DURASI_HIJAU;
+    const int OFFSET = WAKTU_NYATA_KUNING - WAKTU_NORMAL_KUNING; // 45 - 20 = 25 detik
+
+    // --- Menghitung Posisi Detik di Dalam Siklus Normal dengan Modulus ---
+    // Rumus ini menormalkan detik input ke dalam rentang siklus (0-102)
+    // Penambahan TOTAL_SIKLUS sebelum modulus kedua untuk menangani hasil negatif
+    int posisiDalamSiklus = ((detik - OFFSET) % TOTAL_SIKLUS + TOTAL_SIKLUS) % TOTAL_SIKLUS;
+
+    // --- Menentukan Warna (Memenuhi syarat tidak lebih dari 3 baris if-else chain) ---
+    if (posisiDalamSiklus < DURASI_HIJAU) { // Posisi 0-19
+        return "Hijau";
+    } else if (posisiDalamSiklus < DURASI_HIJAU + DURASI_KUNING) { // Posisi 20-22
+        return "Kuning";
+    } else { // Posisi 23-102
+        return "Merah";
+    }
+}
+
+int main() {
+    // Daftar detik yang ingin diperiksa oleh Nabila
+    std::vector<int> daftarDetik = {80, 135, 150, 212};
+
+    std::cout << "Analisis Warna Lampu APILL Spesial Mrican:" << std::endl;
+    std::cout << "-------------------------------------------" << std::endl;
+
+    for (int detik : daftarDetik) {
+        std::string warna = getWarnaLampu(detik);
+        std::cout << "Pada detik ke-" << detik << ", lampu berwarna: " << warna << std::endl;
+    }
+
+    return 0;
+}
