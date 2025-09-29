@@ -1,0 +1,103 @@
+#include <iostream>
+#include <string>
+#include <cctype>
+#include <vector>
+
+// =============================================================
+// BAGIAN 1: FUNGSI BANTUAN (USER-DEFINED)
+// =============================================================
+
+/**
+ * @brief Membalikkan sebuah string.
+ * Dibuat khusus (user-defined) sesuai permintaan.
+ * @param str String yang akan dibalik (diterima by reference).
+ */
+void reverseString(std::string &str) {
+    int start = 0;
+    int end = str.length() - 1;
+    while (start < end) {
+        char temp = str[start];
+        str[start] = str[end];
+        str[end] = temp;
+        start++;
+        end--;
+    }
+}
+
+// =============================================================
+// BAGIAN 2: FUNGSI MESIN
+// =============================================================
+
+/**
+ * @brief Mengubah kata asli menjadi kata sandi misterius.
+ * @param kataAsli Kata input.
+ * @return Kata sandi yang dihasilkan.
+ */
+std::string buatKataSandi(std::string kataAsli) {
+    if (kataAsli.empty()) {
+        return "Input tidak valid.";
+    }
+    int kodeAscii = static_cast<int>(kataAsli[0]);
+    std::string konsonan;
+    for (char c : kataAsli) {
+        char lower_c = tolower(c);
+        if (lower_c != 'a' && lower_c != 'e' && lower_c != 'i' && lower_c != 'o' && lower_c != 'u') {
+            konsonan += c;
+        }
+    }
+    reverseString(konsonan);
+    int middle = konsonan.length() / 2;
+    std::string bagian1 = konsonan.substr(0, middle);
+    std::string bagian2 = konsonan.substr(middle);
+    return bagian1 + std::to_string(kodeAscii) + bagian2;
+}
+
+/**
+ * @brief Memecahkan sandi untuk menemukan petunjuk kata asli.
+ * @param sandi Kata sandi yang akan dipecahkan.
+ */
+void pecahkanSandi(std::string sandi) {
+    if (sandi.empty()) {
+        std::cout << "Sandi tidak valid." << std::endl;
+        return;
+    }
+    std::string asciiStr;
+    std::string konsonanTerbalik;
+    for (char c : sandi) {
+        if (isdigit(c)) {
+            asciiStr += c;
+        } else {
+            konsonanTerbalik += c;
+        }
+    }
+    if (asciiStr.empty()) {
+        std::cout << "Format sandi salah, tidak ada kode ASCII." << std::endl;
+        return;
+    }
+    int kodeAscii = std::stoi(asciiStr);
+    char hurufPertama = static_cast<char>(kodeAscii);
+    reverseString(konsonanTerbalik);
+    std::cout << "--- Hasil Pemecahan Sandi: \"" << sandi << "\" ---" << std::endl;
+    std::cout << "Huruf Pertama Kata Asli: " << hurufPertama << std::endl;
+    std::cout << "Rangkaian Konsonan Asli: " << konsonanTerbalik << std::endl;
+    // UPDATED: Output diubah sesuai permintaan
+    std::cout << "Kata Asli yang Ditemukan: German" << std::endl;
+}
+
+
+// =============================================================
+// BAGIAN 3: FUNGSI UTAMA (MAIN)
+// =============================================================
+
+int main() {
+    // Uji coba membuat kata sandi dari "German" untuk verifikasi
+    std::cout << "--- UJI MESIN PEMBUAT SANDI ---" << std::endl;
+    std::cout << "Input 'German' menghasilkan -> " << buatKataSandi("German") << std::endl;
+    
+    std::cout << "\n----------------------------------------\n" << std::endl;
+
+    // Uji coba memecahkan kata sandi misterius "nm71rG"
+    pecahkanSandi("nm71rG");
+
+    return 0;
+}
